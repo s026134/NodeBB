@@ -1,26 +1,11 @@
-'use strict';
+import { webserver } from '../webserver';
+import { plugins } from '../plugins';
+import { groups } from '../groups';
+import { index } from './index';
 
-const webserver = require('../webserver');
-const plugins = require('../plugins');
-const groups = require('../groups');
-const index = require('./index');
+// const admin = module.exports;
 
-const admin = module.exports;
-
-admin.get = async function () {
-    const [areas, availableWidgets] = await Promise.all([
-        admin.getAreas(),
-        getAvailableWidgets(),
-    ]);
-
-    return {
-        templates: buildTemplatesFromAreas(areas),
-        areas: areas,
-        availableWidgets: availableWidgets,
-    };
-};
-
-admin.getAreas = async function () {
+export async function getAreas() {
     const defaultAreas = [
         { name: 'Global Sidebar', template: 'global', location: 'sidebar' },
         { name: 'Global Header', template: 'global', location: 'header' },
@@ -41,7 +26,7 @@ admin.getAreas = async function () {
 };
 
 async function getAvailableWidgets() {
-    const [availableWidgets, adminTemplate] = await Promise.all([
+    const [availableWidgets, adminTemplate] : [Array<any>, any]= await Promise.all([
         plugins.hooks.fire('filter:widgets.getWidgets', []),
         renderAdminTemplate(),
     ]);
@@ -81,4 +66,16 @@ function buildTemplatesFromAreas(areas) {
     return templates;
 }
 
-require('../promisify')(admin);
+export async function get() {
+    const [areas, availableWidgets]: [Array<any>, any] = await Promise.all([
+        getAreas(),
+        getAvailableWidgets(),
+    ]);
+
+    return {
+        templates: buildTemplatesFromAreas(areas),
+        areas: areas,
+        availableWidgets: availableWidgets,
+    };
+};
+// exp(admin);
