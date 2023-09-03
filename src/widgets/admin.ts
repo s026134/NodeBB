@@ -1,7 +1,7 @@
-import * as webserver from '../webserver';
-import * as plugins from '../plugins';
-import * as groups from '../groups';
-import * as index from './index';
+import webserver from '../webserver';
+import plugins from '../plugins';
+import groups from '../groups';
+import index from './index';
 
 // const admin: any = {};
 
@@ -33,24 +33,33 @@ export async function getAreas() {
         { name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
         { name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
     ];
-
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const areas : Array<Area> = await plugins.hooks.fire('filter:widgets.getAreas', defaultAreas);
     areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
     const areaData = await Promise.all(areas.map((area : Area) => index.getArea(area.template, area.location)));
-    areas.forEach((area : any, i : number) => {
+    areas.forEach((area : Area, i : number) => {
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         area.data = areaData[i];
     });
     return areas;
 }
 
 async function renderAdminTemplate() {
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const groupsData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     groupsData.sort((a, b) => b.system - a.system);
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     return await webserver.app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
 }
 
 async function getAvailableWidgets() {
-    const [availableWidgets, adminTemplate] = await Promise.all([
+    const [availableWidgets, adminTemplate] : [Array<Widget>, Array<Template>] = await Promise.all([
         plugins.hooks.fire('filter:widgets.getWidgets', []),
         renderAdminTemplate(),
     ]);
@@ -60,7 +69,7 @@ async function getAvailableWidgets() {
     return availableWidgets;
 }
 
-function buildTemplatesFromAreas(areas) {
+function buildTemplatesFromAreas(areas : Array<Area>) {
     const templates : Array<Template> = [];
     const list = {};
     let index = 0;
@@ -90,7 +99,7 @@ function buildTemplatesFromAreas(areas) {
 }
 
 export async function get() {
-    const [areas, availableWidgets] = await Promise.all([
+    const [areas, availableWidgets] : [Array<Area>, Array<Widget>] = await Promise.all([
         getAreas(),
         getAvailableWidgets(),
     ]);
