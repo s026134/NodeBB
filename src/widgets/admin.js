@@ -17,6 +17,7 @@ const webserver_1 = __importDefault(require("../webserver"));
 const plugins_1 = __importDefault(require("../plugins"));
 const groups_1 = __importDefault(require("../groups"));
 const index_1 = __importDefault(require("./index"));
+const promisify_1 = __importDefault(require("../promisify"));
 // const admin = module.exports;
 function getAreas() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -108,4 +109,4 @@ function get() {
     });
 }
 exports.get = get;
-// require('../promisify')(module.exports);
+(0, promisify_1.default)(exports);

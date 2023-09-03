@@ -2,6 +2,7 @@ import webserver from '../webserver';
 import plugins from '../plugins';
 import groups from '../groups';
 import index from './index';
+import promisify from '../promisify';
 
 // const admin: any = {};
 
@@ -113,6 +114,6 @@ export async function get() {
     };
 }
 
-// require('../promisify')(module.exports);
+promisify(exports);
 
 
