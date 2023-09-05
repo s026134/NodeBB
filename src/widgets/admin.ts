@@ -4,28 +4,30 @@ import groups from '../groups';
 import index from './index';
 import promisify from '../promisify';
 
-// const admin: any = {};
-
-interface Area {
+type Area = {
     name: string;
     template?: string;
     location: string;
     data?: any;
 }
 
-interface Widget {
+type Widget = {
     content: string;
 }
 
-interface Template {
+type Template = {
     template: string;
     areas: Area[];
 }
 
+type AdminGet = {
+    templates: Array<Template>;
+    areas: Array<Area>;
+    availableWidgets: Array<Widget>;
+}
 
-// const admin = module.exports;
 
-export async function getAreas() {
+export async function getAreas() : Promise<Array<Area>> {
     const defaultAreas = [
         { name: 'Global Sidebar', template: 'global', location: 'sidebar' },
         { name: 'Global Header', template: 'global', location: 'header' },
@@ -35,13 +37,13 @@ export async function getAreas() {
         { name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
     ];
     // The next line calls a function in a module that has not been updated to TS yet
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const areas : Array<Area> = await plugins.hooks.fire('filter:widgets.getAreas', defaultAreas);
     areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
     const areaData = await Promise.all(areas.map((area : Area) => index.getArea(area.template, area.location)));
     areas.forEach((area : Area, i : number) => {
         // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         area.data = areaData[i];
     });
     return areas;
@@ -49,17 +51,19 @@ export async function getAreas() {
 
 async function renderAdminTemplate() {
     // The next line calls a function in a module that has not been updated to TS yet
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const groupsData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
     // The next line calls a function in a module that has not been updated to TS yet
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     groupsData.sort((a, b) => b.system - a.system);
     // The next line calls a function in a module that has not been updated to TS yet
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    return await webserver.app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    return await webserver.app.renderAsync('admin/partials/widget-settings', { groups: groupsData }); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 }
 
-async function getAvailableWidgets() {
+async function getAvailableWidgets() : Promise<Array<Widget>> {
+    // The next line calls a function in a module that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const [availableWidgets, adminTemplate] : [Array<Widget>, Array<Template>] = await Promise.all([
         plugins.hooks.fire('filter:widgets.getWidgets', []),
         renderAdminTemplate(),
@@ -70,7 +74,7 @@ async function getAvailableWidgets() {
     return availableWidgets;
 }
 
-function buildTemplatesFromAreas(areas : Array<Area>) {
+function buildTemplatesFromAreas(areas : Array<Area>) : Array<Template> {
     const templates : Array<Template> = [];
     const list = {};
     let index = 0;
@@ -99,7 +103,7 @@ function buildTemplatesFromAreas(areas : Array<Area>) {
     return templates;
 }
 
-export async function get() {
+export async function get() : Promise<AdminGet> {
     const [areas, availableWidgets] : [Array<Area>, Array<Widget>] = await Promise.all([
         getAreas(),
         getAvailableWidgets(),
@@ -109,7 +113,7 @@ export async function get() {
         templates: buildTemplatesFromAreas(areas),
         areas: areas,
         // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         availableWidgets: availableWidgets,
     };
 }

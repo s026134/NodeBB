@@ -18,7 +18,6 @@ const plugins_1 = __importDefault(require("../plugins"));
 const groups_1 = __importDefault(require("../groups"));
 const index_1 = __importDefault(require("./index"));
 const promisify_1 = __importDefault(require("../promisify"));
-// const admin = module.exports;
 function getAreas() {
     return __awaiter(this, void 0, void 0, function* () {
         const defaultAreas = [
@@ -29,13 +28,13 @@ function getAreas() {
             { name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
         ];
         // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         const areas = yield plugins_1.default.hooks.fire('filter:widgets.getAreas', defaultAreas);
         areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
         const areaData = yield Promise.all(areas.map((area) => index_1.default.getArea(area.template, area.location)));
         areas.forEach((area, i) => {
             // The next line calls a function in a module that has not been updated to TS yet
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
             area.data = areaData[i];
         });
         return areas;
@@ -45,18 +44,20 @@ exports.getAreas = getAreas;
 function renderAdminTemplate() {
     return __awaiter(this, void 0, void 0, function* () {
         // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         const groupsData = yield groups_1.default.getNonPrivilegeGroups('groups:createtime', 0, -1);
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         groupsData.sort((a, b) => b.system - a.system);
         // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        return yield webserver_1.default.app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+        return yield webserver_1.default.app.renderAsync('admin/partials/widget-settings', { groups: groupsData }); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     });
 }
 function getAvailableWidgets() {
     return __awaiter(this, void 0, void 0, function* () {
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         const [availableWidgets, adminTemplate] = yield Promise.all([
             plugins_1.default.hooks.fire('filter:widgets.getWidgets', []),
             renderAdminTemplate(),
@@ -103,7 +104,7 @@ function get() {
             templates: buildTemplatesFromAreas(areas),
             areas: areas,
             // The next line calls a function in a module that has not been updated to TS yet
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
             availableWidgets: availableWidgets,
         };
     });
